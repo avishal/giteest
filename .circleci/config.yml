@@ -13,7 +13,8 @@ workflows:
       - welcome/run
 
 version: 2.2
-  jobs:
+
+jobs:
     build:
       #....
     deploy:
