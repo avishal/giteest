@@ -5,18 +5,27 @@ orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
 # Orchestrate or schedule a set of jobs
+
+jobs:
+   build:
+     #...
+   deploy:
+     machine:
+       enabled: true
+     steps:
+       - run:
+           name: Deploy Over SSH
+           command: |
+             ssh $SSH_USER@$SSH_HOST "scp -r /home/xhjernpcsf19/gitest"
+
 workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
-    jobs:
-      - welcome/run
-      
-      - deploy:
-         machine:
-           enabled: true
-         steps:
-           - run:
-               name: Deploy Over SSH
-               command: |
-                 ssh $SSH_USER@$SSH_HOST "scp -r /home/xhjernpcsf19/gitest"
+  version: 2.1
+  build-and-deploy:
+     jobs:
+       - build
+       - deploy:
+           requires:
+             - build # only deploy once build job has completed
+           filters:
+             branches:
+               only: master # only deploy on the master branch
